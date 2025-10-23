@@ -353,25 +353,25 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
       <div className="py-12 px-4">
         <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold text-awaken-black mb-3">Stage 3 - Your Action Plan</h1>
-          <p className="text-lg text-gray-600">Personalized climate solutions for your lifestyle</p>
+        <div className="text-center mb-12 animate-fade-in px-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-awaken-black mb-3">Stage 3 - Your Action Plan</h1>
+          <p className="text-base md:text-lg text-gray-600">Personalized climate solutions for your lifestyle</p>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-3 gap-4 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
           <div className="bg-yellow-50 border-2 border-awaken-yellow rounded-xl p-6 text-center">
-            <div className="text-4xl font-bold text-awaken-black mb-2">
-              {getCurrentCO2Reduction()}/{getTotalPotentialCO2()} <span className="text-2xl">kg</span>
+            <div className="text-3xl md:text-4xl font-bold text-awaken-black mb-2">
+              {getCurrentCO2Reduction()}/{getTotalPotentialCO2()} <span className="text-xl md:text-2xl">kg</span>
             </div>
             <div className="text-sm text-gray-700 font-medium">CO₂ Reduction So Far</div>
           </div>
           <div className="bg-green-50 border-2 border-green-500 rounded-xl p-6 text-center">
-            <div className="text-4xl font-bold text-green-700 mb-2">{getCompletedCount()}/4</div>
+            <div className="text-3xl md:text-4xl font-bold text-green-700 mb-2">{getCompletedCount()}/4</div>
             <div className="text-sm text-gray-700 font-medium">Actions Completed</div>
           </div>
           <div className="bg-blue-50 border-2 border-blue-500 rounded-xl p-6 text-center">
-            <div className="text-4xl font-bold text-blue-700 mb-2">{getInProgressCount()}</div>
+            <div className="text-3xl md:text-4xl font-bold text-blue-700 mb-2">{getInProgressCount()}</div>
             <div className="text-sm text-gray-700 font-medium">In Progress</div>
           </div>
         </div>
@@ -408,14 +408,14 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
         )}
 
         {/* Solution Cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {solutions.map((solution, index) => {
             const isExpanded = expandedCard === index
             const status = actionStatus[index]
             return (
               <div
                 key={index}
-                className={`relative bg-white border-2 rounded-xl p-6 hover:shadow-lg transition-all animate-slide-up ${
+                className={`relative bg-white border-2 rounded-xl p-4 md:p-6 hover:shadow-lg transition-all animate-slide-up ${
                   status === 'completed' ? 'border-green-500 bg-green-50' :
                   status === 'in-progress' ? 'border-awaken-yellow bg-yellow-50' :
                   'border-gray-200 hover:border-awaken-yellow'
@@ -488,7 +488,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
                     {/* Impact Metrics */}
                     <div>
                       <div className="text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">Impact & Benefits:</div>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <div className="bg-yellow-50 rounded-lg p-3 text-center">
                           <div className="text-xs text-gray-600 mb-1">CO₂ Reduction</div>
                           <div className="font-bold text-sm text-awaken-black">{solution.impact.co2Reduction}</div>
@@ -507,7 +507,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 mt-4">
+                <div className="flex flex-col sm:flex-row gap-2 mt-4">
                   <button
                     onClick={() => updateStatus(index, 'in-progress')}
                     disabled={status === 'completed'}
@@ -589,7 +589,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
               </div>
 
               {/* Impact Metrics */}
-              <div className="grid grid-cols-3 gap-2 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
                 <div className="bg-white rounded-lg p-3 text-center">
                   <div className="text-xs text-gray-600 mb-1">CO₂ Reduction</div>
                   <div className="font-bold text-sm text-awaken-black">{suggestedAction.impact.co2Reduction}</div>
@@ -619,7 +619,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={acceptSuggestion}
                 className="flex-1 bg-awaken-yellow text-awaken-black px-6 py-3 rounded-lg hover:bg-yellow-400 transition-colors font-bold"
@@ -634,7 +634,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
               </button>
               <button
                 onClick={dismissSuggestion}
-                className="bg-white border-2 border-gray-300 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                className="sm:flex-none bg-white border-2 border-gray-300 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
               >
                 Maybe Later
               </button>

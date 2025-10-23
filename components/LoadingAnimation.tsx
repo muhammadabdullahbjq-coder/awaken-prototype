@@ -65,11 +65,20 @@ export default function LoadingAnimation({ onComplete }: { onComplete: () => voi
         <div className="absolute bottom-1/3 right-1/4 text-4xl">💚</div>
       </div>
 
-      <div className="text-center w-full max-w-md px-8 z-10">
-        {/* Awaken Logo with Pulse Animation */}
-        <div className="mb-12">
-          <h1 className="text-6xl font-bold text-awaken-yellow mb-2 animate-pulse">AWAKEN</h1>
-          <p className="text-sm text-gray-200 uppercase tracking-wider">Climate Action for Everyone</p>
+      <div className="text-center w-full max-w-2xl px-8 z-10">
+        {/* Awaken Logo with Text on Black Background */}
+        <div className="mb-12 flex items-center justify-center">
+          <div className="bg-black rounded-2xl px-12 py-6 shadow-2xl border-4 border-awaken-yellow flex items-center gap-6 hover:scale-105 transition-transform duration-300 w-full">
+            {/* Logo Icon */}
+            <div className="w-20 h-20 bg-awaken-yellow rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+              <span className="text-black font-black text-4xl">A</span>
+            </div>
+            {/* Text */}
+            <div className="text-left flex-1">
+              <h1 className="text-5xl font-black text-awaken-yellow tracking-tight leading-none mb-2" style={{ textShadow: '0 0 20px rgba(254, 214, 75, 0.5)' }}>AWAKEN</h1>
+              <p className="text-sm text-gray-200 uppercase tracking-widest font-semibold">Climate Action for Everyone</p>
+            </div>
+          </div>
         </div>
 
         {/* Progress Bar */}
@@ -107,11 +116,11 @@ export default function LoadingAnimation({ onComplete }: { onComplete: () => voi
         </div>
 
         {/* Climate Fact Box */}
-        <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 border-2 border-green-500 shadow-lg">
+        <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 border-2 border-awaken-yellow shadow-lg">
           <div className="flex items-start gap-3">
             <span className="text-2xl flex-shrink-0">💡</span>
             <div>
-              <p className="text-sm text-green-400 font-semibold mb-2 uppercase tracking-wide">Did you know?</p>
+              <p className="text-sm text-awaken-yellow font-semibold mb-2 uppercase tracking-wide">Did you know?</p>
               <p className="text-base text-gray-100 leading-relaxed">
                 {climateFact}
               </p>

@@ -196,7 +196,7 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
       case 'pie':
         return (
           <div className="max-w-xl mx-auto">
-            <div className="h-[280px]">
+            <div className="h-[250px] md:h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -204,27 +204,8 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={(props: any) => {
-                      const RADIAN = Math.PI / 180
-                      const { cx, cy, midAngle, outerRadius, name, value } = props
-                      const radius = outerRadius + 25
-                      const x = cx + radius * Math.cos(-midAngle * RADIAN)
-                      const y = cy + radius * Math.sin(-midAngle * RADIAN)
-
-                      return (
-                        <text
-                          x={x}
-                          y={y}
-                          fill="#1F2937"
-                          textAnchor={x > cx ? 'start' : 'end'}
-                          dominantBaseline="central"
-                          style={{ fontSize: '13px', fontWeight: '600' }}
-                        >
-                          {`${name}: ${value}%`}
-                        </text>
-                      )
-                    }}
-                    outerRadius={85}
+                    label={false}
+                    outerRadius={window.innerWidth < 768 ? 70 : 85}
                     fill="#8884d8"
                     dataKey="value"
                     onMouseEnter={(data, index) => setHoveredSector(index)}
@@ -239,7 +220,7 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="mt-6 grid grid-cols-2 gap-2 px-4">
+            <div className="mt-4 grid grid-cols-2 gap-2 px-2 md:px-4">
               {footprintData.map((item, index) => (
                 <div key={index} className="flex items-center gap-2 text-xs">
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[index] }} />
@@ -252,49 +233,49 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
         )
       case 'bar':
         return (
-          <div className="h-[350px]">
+          <div className="h-[300px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={neighborComparisonData}>
+              <BarChart data={neighborComparisonData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="category" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip contentStyle={{ fontSize: '12px' }} />
+                <XAxis dataKey="category" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <Tooltip contentStyle={{ fontSize: '11px' }} />
                 <Bar dataKey="you" fill="#F87171" name="You" />
                 <Bar dataKey="neighbors" fill="#60A5FA" name="Neighbors Avg" />
                 <Bar dataKey="national" fill="#A78BFA" name="National Avg" />
               </BarChart>
             </ResponsiveContainer>
-            <p className="text-xs text-center text-gray-600 mt-4">
+            <p className="text-xs text-center text-gray-600 mt-4 px-2">
               📊 You emit <strong>7% more</strong> than your neighbors
             </p>
           </div>
         )
       case 'line':
         return (
-          <div className="h-[350px]">
+          <div className="h-[300px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={historicalData}>
+              <LineChart data={historicalData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} domain={[1200, 1400]} />
-                <Tooltip contentStyle={{ fontSize: '12px' }} />
-                <Line type="monotone" dataKey="emissions" stroke="#10B981" strokeWidth={3} name="Monthly Emissions" />
+                <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} domain={[1200, 1400]} />
+                <Tooltip contentStyle={{ fontSize: '11px' }} />
+                <Line type="monotone" dataKey="emissions" stroke="#10B981" strokeWidth={2} name="Monthly Emissions" />
               </LineChart>
             </ResponsiveContainer>
-            <p className="text-xs text-center text-gray-600 mt-4">
+            <p className="text-xs text-center text-gray-600 mt-4 px-2">
               📉 You've reduced emissions by <strong>5.2%</strong> since January
             </p>
           </div>
         )
       case 'yearlyBar':
         return (
-          <div className="h-[350px]">
+          <div className="h-[300px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={yearlyComparisonData}>
+              <BarChart data={yearlyComparisonData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="year" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip contentStyle={{ fontSize: '12px' }} />
+                <XAxis dataKey="year" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <Tooltip contentStyle={{ fontSize: '11px' }} />
                 <Bar dataKey="emissions" name="Annual Emissions">
                   {yearlyComparisonData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -302,27 +283,27 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-            <p className="text-xs text-center text-gray-600 mt-4">
+            <p className="text-xs text-center text-gray-600 mt-4 px-2">
               📈 You've improved by <strong>11.7%</strong> from last year
             </p>
           </div>
         )
       case 'categoryLine':
         return (
-          <div className="h-[350px]">
+          <div className="h-[300px] md:h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={categoryTrendData}>
+              <LineChart data={categoryTrendData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip contentStyle={{ fontSize: '12px' }} />
+                <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <Tooltip contentStyle={{ fontSize: '11px' }} />
                 <Line type="monotone" dataKey="transport" stroke="#F87171" strokeWidth={2} name="Transport" />
                 <Line type="monotone" dataKey="food" stroke="#FB923C" strokeWidth={2} name="Food" />
                 <Line type="monotone" dataKey="energy" stroke="#FBBF24" strokeWidth={2} name="Energy" />
                 <Line type="monotone" dataKey="goods" stroke="#4ADE80" strokeWidth={2} name="Goods" />
               </LineChart>
             </ResponsiveContainer>
-            <p className="text-xs text-center text-gray-600 mt-4">
+            <p className="text-xs text-center text-gray-600 mt-4 px-2">
               🎯 Transport is your biggest reduction opportunity
             </p>
           </div>
@@ -377,9 +358,9 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
       <div className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">Stage 1 - Nudging</h1>
-          <p className="text-lg text-gray-600">Building climate awareness one nudge at a time</p>
+        <div className="text-center mb-8 animate-fade-in px-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Stage 1 - Nudging</h1>
+          <p className="text-base md:text-lg text-gray-600">Building climate awareness one nudge at a time</p>
         </div>
 
         {/* How It Works Box */}
@@ -391,36 +372,40 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
 
         {/* Carbon Footprint Chart */}
         <div className="card mb-6 animate-slide-up">
-          <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">Your Carbon Footprint Breakdown</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-center text-gray-900">Your Carbon Footprint Breakdown</h2>
 
           {/* Carousel Container */}
           <div className="relative mb-4">
             {/* Graph Carousel */}
             <div
               ref={carouselRef}
-              className="flex items-center gap-6 px-4"
+              className="flex items-center gap-2 md:gap-6 px-2 md:px-4"
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
             >
-              {/* Previous Graph (Peek) */}
-              <div className="flex-shrink-0 w-40 opacity-20 pointer-events-none">
-                <div className="text-xs text-center text-gray-500 mb-2 truncate">{graphs[getGraphIndex(-1)].title}</div>
-                <div className="h-48 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
-                  <span className="text-gray-300 text-sm">Previous</span>
+              {/* Previous Graph (Peek) - Hidden on mobile */}
+              <div className="hidden md:flex flex-shrink-0 w-40 opacity-20 pointer-events-none">
+                <div className="w-full">
+                  <div className="text-xs text-center text-gray-500 mb-2 truncate">{graphs[getGraphIndex(-1)].title}</div>
+                  <div className="h-48 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                    <span className="text-gray-300 text-sm">Previous</span>
+                  </div>
                 </div>
               </div>
 
               {/* Current Graph */}
-              <div className="flex-1 max-w-3xl mx-auto">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">{graphs[currentGraphIndex].title}</h3>
+              <div className="flex-1 max-w-3xl mx-auto w-full">
+                <h3 className="text-base md:text-lg font-semibold text-gray-800 mb-4 text-center">{graphs[currentGraphIndex].title}</h3>
                 {renderGraph(graphs[currentGraphIndex].component)}
               </div>
 
-              {/* Next Graph (Peek) */}
-              <div className="flex-shrink-0 w-40 opacity-20 pointer-events-none">
-                <div className="text-xs text-center text-gray-500 mb-2 truncate">{graphs[getGraphIndex(1)].title}</div>
-                <div className="h-48 bg-gradient-to-l from-gray-50 to-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
-                  <span className="text-gray-300 text-sm">Next</span>
+              {/* Next Graph (Peek) - Hidden on mobile */}
+              <div className="hidden md:flex flex-shrink-0 w-40 opacity-20 pointer-events-none">
+                <div className="w-full">
+                  <div className="text-xs text-center text-gray-500 mb-2 truncate">{graphs[getGraphIndex(1)].title}</div>
+                  <div className="h-48 bg-gradient-to-l from-gray-50 to-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                    <span className="text-gray-300 text-sm">Next</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -428,19 +413,19 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
             {/* Left Arrow Button - Positioned over the peek */}
             <button
               onClick={prevGraph}
-              className="absolute left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border-2 border-gray-300 rounded-full shadow-lg hover:bg-white hover:border-awaken-yellow transition-all flex items-center justify-center"
+              className="absolute left-1 md:left-8 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm border-2 border-gray-300 rounded-full shadow-lg hover:bg-white hover:border-awaken-yellow transition-all flex items-center justify-center"
               aria-label="Previous graph"
             >
-              <span className="text-gray-600 text-2xl font-bold">←</span>
+              <span className="text-gray-600 text-xl md:text-2xl font-bold">←</span>
             </button>
 
             {/* Right Arrow Button - Positioned over the peek */}
             <button
               onClick={nextGraph}
-              className="absolute right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-sm border-2 border-gray-300 rounded-full shadow-lg hover:bg-white hover:border-awaken-yellow transition-all flex items-center justify-center"
+              className="absolute right-1 md:right-8 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm border-2 border-gray-300 rounded-full shadow-lg hover:bg-white hover:border-awaken-yellow transition-all flex items-center justify-center"
               aria-label="Next graph"
             >
-              <span className="text-gray-600 text-2xl font-bold">→</span>
+              <span className="text-gray-600 text-xl md:text-2xl font-bold">→</span>
             </button>
           </div>
 

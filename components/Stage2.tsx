@@ -255,9 +255,9 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
         {surveyState === 'completed' && (
           <>
             {/* Header - Show after survey */}
-            <div className="text-center mb-8 animate-fade-in">
-              <h1 className="text-4xl font-bold text-gray-900 mb-3">Stage 2 - AI-Powered Climate Education</h1>
-              <p className="text-lg text-gray-600">Building climate literacy through LLM-powered education</p>
+            <div className="text-center mb-8 animate-fade-in px-4">
+              <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3">Stage 2 - AI-Powered Climate Education</h1>
+              <p className="text-base md:text-lg text-gray-600">Building climate literacy through LLM-powered education</p>
             </div>
 
             {/* How It Works Box */}
