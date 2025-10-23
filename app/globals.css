@@ -21,4 +21,17 @@
     background-image:
       repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(254, 214, 75, 0.05) 10px, rgba(254, 214, 75, 0.05) 20px);
   }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-scroll {
+    animation: scroll 20s linear infinite;
+  }
 }
