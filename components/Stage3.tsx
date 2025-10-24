@@ -87,6 +87,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
   const [actionStatus, setActionStatus] = useState<{ [key: number]: 'not-started' | 'in-progress' | 'completed' }>(
     Object.fromEntries(initialSolutions.map((_, i) => [i, 'not-started']))
   )
+  const [completedActions, setCompletedActions] = useState<any[]>([]) // Track completed actions separately
   const [suggestedAction, setSuggestedAction] = useState<any>(null)
   const [showSuggestion, setShowSuggestion] = useState(false)
   const [lastCompletedIndex, setLastCompletedIndex] = useState<number | null>(null)
@@ -108,11 +109,28 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
   }
 
   const acceptSuggestion = () => {
-    // Add the suggested action to solutions array
-    const newIndex = solutions.length
-    setSolutions([...solutions, suggestedAction])
-    setActionStatus({...actionStatus, [newIndex]: 'not-started'})
-    setShowSuggestion(false)
+    if (lastCompletedIndex !== null) {
+      // Replace the completed action at lastCompletedIndex
+      const newSolutions = [...solutions]
+
+      // Save the completed action to completedActions array with its CO2 value
+      const completedAction = newSolutions[lastCompletedIndex]
+      const match = completedAction.impact.co2Reduction.match(/[\d.]+/)
+      const co2Value = match ? parseFloat(match[0]) : 0
+      setCompletedActions([...completedActions, { ...completedAction, co2Value }])
+
+      // Replace with new action
+      newSolutions[lastCompletedIndex] = suggestedAction
+      setSolutions(newSolutions)
+
+      // Reset the status for the new action at this index
+      const newStatus = { ...actionStatus }
+      newStatus[lastCompletedIndex] = 'not-started'
+      setActionStatus(newStatus)
+
+      setShowSuggestion(false)
+      setLastCompletedIndex(null)
+    }
   }
 
   const rejectSuggestion = () => {
@@ -132,7 +150,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
   }
 
   const getCompletedCount = () => {
-    return Object.values(actionStatus).filter(status => status === 'completed').length
+    return completedActions.length
   }
 
   const getInProgressCount = () => {
@@ -140,25 +158,19 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
   }
 
   const getCurrentCO2Reduction = () => {
-    return solutions
-      .filter((_, index) => actionStatus[index] === 'completed')
-      .reduce((total, solution) => {
-        // Extract number from string like "162 kg CO2/year" or "13.5 kg CO2"
-        // Skip non-numeric values like "Policy impact"
-        const match = solution.impact.co2Reduction.match(/[\d.]+/)
-        const co2Value = match ? parseFloat(match[0]) : 0
-        return total + co2Value
-      }, 0)
+    // Sum CO2 from completed actions only
+    return completedActions.reduce((total, action) => total + (action.co2Value || 0), 0)
   }
 
   const getTotalPotentialCO2 = () => {
-    return solutions.reduce((total, solution) => {
-      // Extract number from string like "162 kg CO2/year" or "13.5 kg CO2"
-      // Skip non-numeric values like "Policy impact"
+    // Sum of active solutions + completed actions
+    const activeCO2 = solutions.reduce((total, solution) => {
       const match = solution.impact.co2Reduction.match(/[\d.]+/)
       const co2Value = match ? parseFloat(match[0]) : 0
       return total + co2Value
     }, 0)
+    const completedCO2 = completedActions.reduce((total, action) => total + (action.co2Value || 0), 0)
+    return activeCO2 + completedCO2
   }
 
   const alternativeActions = [
@@ -364,12 +376,12 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
           <div className="bg-yellow-50 border-2 border-awaken-yellow rounded-xl p-6 text-center">
             <div className="text-3xl md:text-4xl font-bold text-awaken-black mb-2">
-              {getCurrentCO2Reduction()}/{getTotalPotentialCO2()} <span className="text-xl md:text-2xl">kg</span>
+              {Math.round(getCurrentCO2Reduction())}/{Math.round(getTotalPotentialCO2())} <span className="text-xl md:text-2xl">kg</span>
             </div>
             <div className="text-sm text-gray-700 font-medium">CO₂ Reduction So Far</div>
           </div>
           <div className="bg-green-50 border-2 border-green-500 rounded-xl p-6 text-center">
-            <div className="text-3xl md:text-4xl font-bold text-green-700 mb-2">{getCompletedCount()}/{solutions.length}</div>
+            <div className="text-3xl md:text-4xl font-bold text-green-700 mb-2">{getCompletedCount()}</div>
             <div className="text-sm text-gray-700 font-medium">Actions Completed</div>
           </div>
           <div className="bg-blue-50 border-2 border-blue-500 rounded-xl p-6 text-center">
