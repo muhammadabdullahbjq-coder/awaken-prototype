@@ -402,7 +402,7 @@ You are about to write your response. Before you do:
 
     const response = await Promise.race([
       anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022', // Switched from Haiku for better instruction following
+        model: 'claude-3-haiku-20240307', // Haiku with stronger enforcement
         max_tokens: 400,
         messages,
         system: systemPrompt,
