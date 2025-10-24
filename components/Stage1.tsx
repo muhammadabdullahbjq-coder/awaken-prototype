@@ -316,19 +316,19 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
   const nudges = [
     {
       title: `Transport: 450kg CO2/Year (35% of your footprint)`,
-      message: `Your daily car commute emits as much CO2 as 20 trees absorb annually. This contributes to heat waves that make outdoor work dangerous for migrant laborers in Qatar. Be a **Khalifa** (guardian) of Allah's creation.`,
+      message: `Your daily car commute emits as much CO2 as 20 trees absorb annually. This contributes to heat waves that make outdoor work dangerous for migrant laborers in Qatar.`,
       time: `Just now`,
       icon: `🚗`,
     },
     {
       title: `Food: 360kg CO2/Year (28% of your footprint)`,
-      message: `Food waste in your bin could have fed a family for weeks. As it rots, it releases methane—84x more potent than CO2. Honor the blessing of sustenance through **Shukr** (gratitude) by wasting less.`,
+      message: `Food waste in your bin could have fed a family for weeks. As it rots, it releases methane—84x more potent than CO2. Small changes in how we consume can make a real difference.`,
       time: `2h ago`,
       icon: `🍽️`,
     },
     {
       title: `Energy: 280kg CO2/Year (22% of your footprint)`,
-      message: `Leaving AC at 20°C instead of 24°C wastes energy equivalent to powering a refugee family's home for a month. Rising emissions worsen droughts that displace millions. Practice **Amanah** (trusteeship) with resources.`,
+      message: `Leaving AC at 20°C instead of 24°C wastes energy equivalent to powering a refugee family's home for a month. Rising emissions worsen droughts that displace millions worldwide.`,
       time: `1d ago`,
       icon: `⚡`,
     },
@@ -460,34 +460,164 @@ export default function Stage1({ onContinue, currentStage }: { onContinue: () =>
         {/* Sample Nudges */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-6 text-center">Personalized Nudges</h2>
-          <p className="text-center text-gray-600 mb-6 text-sm">How notifications would appear on your phone</p>
-          <div className="max-w-4xl mx-auto space-y-3">
-            {nudges.map((nudge, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 animate-slide-up hover:shadow-xl transition-all"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                }}
-              >
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-11 h-11 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg flex items-center justify-center shadow-sm">
-                      <span className="text-gray-900 font-bold text-2xl">A</span>
+          <p className="text-center text-gray-600 mb-6 text-sm">AI-powered notifications with clear visuals</p>
+
+          {/* Top Row: Notifications left, Pie Chart right */}
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
+
+            {/* Left Column: Notifications (60% width on desktop) */}
+            <div className="lg:col-span-3 space-y-3">
+              {nudges.map((nudge, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 animate-slide-up hover:shadow-xl transition-all"
+                  style={{
+                    animationDelay: `${index * 0.1}s`,
+                  }}
+                >
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-11 h-11 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg flex items-center justify-center shadow-sm">
+                        <span className="text-gray-900 font-bold text-2xl">A</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="font-semibold text-gray-900 text-sm">Awaken</p>
-                      <p className="text-xs text-gray-500">{nudge.time}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-semibold text-gray-900 text-sm">Awaken</p>
+                        <p className="text-xs text-gray-500">{nudge.time}</p>
+                      </div>
+                      <p className="font-medium text-gray-800 text-sm mb-1.5">{nudge.title}</p>
+                      <p className="text-gray-600 text-sm leading-relaxed">{nudge.message.replace(/\*\*/g, '')}</p>
                     </div>
-                    <p className="font-medium text-gray-800 text-sm mb-1.5">{nudge.title}</p>
-                    <p className="text-gray-600 text-sm leading-relaxed">{nudge.message.replace(/\*\*/g, '')}</p>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Right Column: Pie Chart (40% width on desktop) */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-5 h-full">
+                <h3 className="text-base font-bold text-gray-800 mb-4 text-center">Your Emission Breakdown</h3>
+                <div className="h-[220px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={footprintData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={false}
+                        outerRadius={75}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {footprintData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip contentStyle={{ fontSize: '12px', fontWeight: '600' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {footprintData.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm">
+                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[index] }} />
+                      <span className="text-gray-700">{item.name}</span>
+                      <span className="font-bold text-gray-900 ml-auto">{item.value}%</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            </div>
+
           </div>
+
+          {/* Middle Row: 6-Month Trend Line Graph */}
+          <div className="max-w-6xl mx-auto mb-6">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-5">
+              <h3 className="text-base font-bold text-gray-800 mb-4 text-center">Your 6-Month Progress</h3>
+              <div className="h-[240px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={historicalData} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis
+                      dataKey="month"
+                      tick={{ fontSize: 12, fill: '#6B7280' }}
+                      stroke="#9CA3AF"
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: '#6B7280' }}
+                      stroke="#9CA3AF"
+                      domain={[1200, 1400]}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        fontSize: '13px',
+                        backgroundColor: '#FFF',
+                        border: '2px solid #FED64B',
+                        borderRadius: '8px',
+                        padding: '8px 12px'
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="emissions"
+                      stroke="#10B981"
+                      strokeWidth={3}
+                      name="Monthly Emissions (kg CO2)"
+                      dot={{ fill: '#10B981', r: 5 }}
+                      activeDot={{ r: 7 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <p className="text-sm text-center text-gray-700 mt-4 font-medium">
+                📉 You've reduced emissions by <strong className="text-green-600">5.2%</strong> since January - Keep it up!
+              </p>
+            </div>
+          </div>
+
+          {/* Bottom Row: Impact Metrics spanning full width */}
+          <div className="max-w-6xl mx-auto">
+            <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl shadow-lg border-2 border-awaken-yellow p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-6 text-center">Your Real-World Impact</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Trees Needed */}
+                <div className="text-center">
+                  <div className="text-5xl mb-3">🌳</div>
+                  <div className="text-3xl font-bold text-gray-900 mb-2">23</div>
+                  <div className="text-sm font-semibold text-gray-700">Trees Needed/Year</div>
+                  <div className="text-xs text-gray-600 mt-1">to absorb your emissions</div>
+                </div>
+
+                {/* vs Neighbors */}
+                <div className="text-center">
+                  <div className="text-5xl mb-3">📊</div>
+                  <div className="text-3xl font-bold text-red-600 mb-2">+7%</div>
+                  <div className="text-sm font-semibold text-gray-700">vs Neighbors</div>
+                  <div className="text-xs text-gray-600 mt-1">room for improvement</div>
+                </div>
+
+                {/* Improvement */}
+                <div className="text-center">
+                  <div className="text-5xl mb-3">📉</div>
+                  <div className="text-3xl font-bold text-green-600 mb-2">-5.2%</div>
+                  <div className="text-sm font-semibold text-gray-700">Improvement</div>
+                  <div className="text-xs text-gray-600 mt-1">since January 2024</div>
+                </div>
+
+                {/* Ice Melted */}
+                <div className="text-center">
+                  <div className="text-5xl mb-3">🧊</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">3,840kg</div>
+                  <div className="text-sm font-semibold text-gray-700">Arctic Ice Melted</div>
+                  <div className="text-xs text-gray-600 mt-1">equivalent annual impact</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         {/* Continue Button */}

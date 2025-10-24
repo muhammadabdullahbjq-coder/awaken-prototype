@@ -22,10 +22,9 @@ export default function LoadingAnimation({ onComplete }: { onComplete: () => voi
   })
 
   const steps = [
-    { label: 'Analyzing spending patterns...', threshold: 25 },
-    { label: 'Detecting location data...', threshold: 50 },
-    { label: 'Identifying cultural background...', threshold: 99 },
-    { label: 'Cultural profile: Muslim', threshold: 100, highlight: true },
+    { label: 'Analyzing spending patterns...', threshold: 33 },
+    { label: 'Detecting location data...', threshold: 66 },
+    { label: 'Calculating carbon footprint...', threshold: 100 },
   ]
 
   useEffect(() => {
@@ -33,12 +32,12 @@ export default function LoadingAnimation({ onComplete }: { onComplete: () => voi
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval)
-          setTimeout(() => onComplete(), 2000) // 2 second pause to read the final message
+          setTimeout(() => onComplete(), 500) // 0.5 second pause before next screen
           return 100
         }
-        return prev + 1
+        return prev + 2.5
       })
-    }, 60) // Total duration: 6 seconds (100 * 60ms)
+    }, 60) // Total duration: 2.4 seconds (40 * 60ms)
 
     return () => clearInterval(interval)
   }, [onComplete])
@@ -70,8 +69,8 @@ export default function LoadingAnimation({ onComplete }: { onComplete: () => voi
         <div className="mb-12 flex items-center justify-center">
           <div className="bg-black rounded-2xl px-12 py-6 shadow-2xl border-4 border-awaken-yellow flex items-center gap-6 hover:scale-105 transition-transform duration-300 w-full">
             {/* Logo Icon */}
-            <div className="w-20 h-20 bg-awaken-yellow rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-              <span className="text-black font-black text-4xl">A</span>
+            <div className="w-28 h-28 bg-awaken-yellow rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+              <span className="text-black font-black text-6xl">A</span>
             </div>
             {/* Text */}
             <div className="text-left flex-1">
@@ -93,30 +92,13 @@ export default function LoadingAnimation({ onComplete }: { onComplete: () => voi
 
         {/* Current Step Text */}
         <div className="h-20 flex items-center justify-center mb-8">
-          {steps[currentStep]?.highlight && progress === 100 ? (
-            <div className="px-8 py-4 rounded-lg shadow-2xl scale-110 animate-fade-in flex items-center gap-3 bg-yellow-100">
-              <p className="text-xl font-bold text-yellow-900">{steps[currentStep]?.label}</p>
-              <svg
-                className="w-6 h-6 text-green-600"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-          ) : (
-            <p className="text-lg font-medium text-gray-200 transition-all duration-300">
-              {steps[currentStep]?.label}
-            </p>
-          )}
+          <p className="text-lg font-medium text-gray-200 transition-all duration-300">
+            {steps[currentStep]?.label}
+          </p>
         </div>
 
         {/* Climate Fact Box */}
-        <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 border-2 border-awaken-yellow shadow-lg">
+        <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 border-2 border-awaken-yellow shadow-lg max-w-md mx-auto">
           <div className="flex items-start gap-3">
             <span className="text-2xl flex-shrink-0">💡</span>
             <div>

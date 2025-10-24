@@ -21,27 +21,92 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Assalamu alaikum! I'm here to help you understand climate change and how we can take action. What would you like to learn about?",
+      content: "Hey! Climate change is a big topic, but we'll take it step by step.\n\nQuick question to start: Do you think climate change is real?",
     },
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+  const [demoMode, setDemoMode] = useState(false) // Toggle for demo mode
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  const scrollToBottom = (force = false) => {
+    const chatContainer = messagesEndRef.current?.parentElement
+    if (chatContainer) {
+      if (force) {
+        // Force scroll (when user sends a message)
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        // Only auto-scroll if user is already near the bottom (within 100px)
+        const isNearBottom = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < 100
+        if (isNearBottom) {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+        }
+      }
+    }
   }
 
   useEffect(() => {
-    scrollToBottom()
+    // Delay scroll slightly to let message render first
+    const timer = setTimeout(() => {
+      scrollToBottom(shouldAutoScroll)
+      if (shouldAutoScroll) setShouldAutoScroll(false) // Reset after forced scroll
+    }, 100)
+    return () => clearTimeout(timer)
   }, [messages])
+
+  // Map survey answers to Yale Six Americas categories
+  const determineYaleCategory = (): string => {
+    const { importance, concern, personalImpact, futureImpact } = surveyAnswers
+
+    // If survey not completed, default to 'concerned'
+    if (!importance && !concern) return 'concerned'
+
+    // Alarmed: Extremely significant + Extremely concerned
+    if ((importance === 'Extremely significant' || concern === 'Extremely concerned') &&
+        futureImpact === 'Severely impacted') {
+      return 'alarmed'
+    }
+
+    // Concerned: Very/Moderately significant + concerned
+    if ((importance === 'Very significant' || importance === 'Moderately significant') ||
+        (concern === 'Very concerned' || concern === 'Somewhat concerned')) {
+      return 'concerned'
+    }
+
+    // Cautious: Moderately significant but not very concerned
+    if (importance === 'Moderately significant' && concern !== 'Very concerned') {
+      return 'cautious'
+    }
+
+    // Disengaged: Low significance + low concern
+    if ((importance === 'Slightly significant' || importance === 'Not at all significant') &&
+        concern === 'Not very concerned') {
+      return 'disengaged'
+    }
+
+    // Doubtful: Uncertain or mixed signals
+    if (personalImpact === 'Not sure' || importance === 'Slightly significant') {
+      return 'doubtful'
+    }
+
+    // Dismissive: Not significant + not concerned
+    if (importance === 'Not at all significant' && concern === 'Not concerned at all') {
+      return 'dismissive'
+    }
+
+    // Default
+    return 'concerned'
+  }
 
   const handleSend = async () => {
     if (!input.trim()) return
 
     const userMessage = input.trim()
     setInput('')
-    setMessages((prev) => [...prev, { role: 'user', content: userMessage }])
+    setShouldAutoScroll(true) // Force scroll when user sends message
+    const newMessages = [...messages, { role: 'user', content: userMessage }]
+    setMessages(newMessages)
     setIsLoading(true)
 
     try {
@@ -50,9 +115,22 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
+          conversationHistory: newMessages, // Send full conversation for context
           userProfile: {
             culturalBackground: 'Muslim',
-            yaleCategory: 'concerned', // Can be customized based on initial survey
+            yaleCategory: determineYaleCategory(), // Based on survey responses
+          },
+          footprintData: {
+            // From Stage 1 - TODO: pass this as prop from parent
+            transport: 450,
+            transportPercent: 35,
+            food: 360,
+            foodPercent: 28,
+            energy: 280,
+            energyPercent: 22,
+            goods: 190,
+            goodsPercent: 15,
+            total: 1280
           },
         }),
       })
@@ -85,11 +163,22 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
     }
   }
 
+  // Convert markdown-style formatting to HTML
+  const formatMessage = (text: string) => {
+    // Convert **bold** to <strong>bold</strong>
+    let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Convert bullet points • to proper list items
+    formatted = formatted.replace(/^• (.+)$/gm, '<div class="ml-4">• $1</div>')
+    // Preserve line breaks
+    formatted = formatted.replace(/\n/g, '<br />')
+    return formatted
+  }
+
   const suggestedQuestions = [
-    "What are the main causes of climate change?",
-    "How does climate change affect vulnerable communities?",
-    "What solutions exist for climate change?",
-    "How does Islam view climate action?",
+    "Is climate change actually real?",
+    "What's the science behind climate change?",
+    "How do we know humans are causing it?",
+    "What's the evidence that it's happening?",
   ]
 
   const surveyQuestions = [
@@ -285,7 +374,14 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
                       : 'bg-gray-100 text-gray-800'
                   }`}
                 >
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  {msg.role === 'user' ? (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  ) : (
+                    <div
+                      className="whitespace-pre-wrap"
+                      dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
+                    />
+                  )}
                 </div>
               </div>
             ))}
@@ -304,6 +400,24 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
 
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Suggested Questions */}
+          {messages.length <= 2 && (
+            <div className="border-t px-4 pt-4 pb-2">
+              <p className="text-xs text-gray-600 mb-2">Suggested questions:</p>
+              <div className="grid grid-cols-2 gap-2">
+                {suggestedQuestions.map((question, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setInput(question)}
+                    className="text-left p-2 bg-gray-50 border border-gray-200 rounded-lg hover:border-awaken-yellow hover:bg-yellow-50 transition-all text-xs"
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Input */}
           <div className="border-t p-4">
@@ -327,24 +441,6 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
             </div>
           </div>
         </div>
-
-        {/* Suggested Questions */}
-        {messages.length <= 2 && (
-          <div className="mb-6">
-            <p className="text-sm text-gray-600 mb-3 text-center">Suggested questions:</p>
-            <div className="grid md:grid-cols-2 gap-3">
-              {suggestedQuestions.map((question, index) => (
-                <button
-                  key={index}
-                  onClick={() => setInput(question)}
-                  className="text-left p-3 bg-white border border-gray-200 rounded-lg hover:border-awaken-yellow hover:shadow-md transition-all text-sm"
-                >
-                  {question}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
             {/* Social Tipping Point Box */}
             <div className="bg-yellow-50 border border-amber-400 rounded-lg p-4 mb-8 animate-fade-in">

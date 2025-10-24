@@ -6,12 +6,87 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
   const userName = "Ahmed" // Can be personalized
   const totalReduction = 397 // kg CO2/year (31% of 1280)
   const [expandedCard, setExpandedCard] = useState<number | null>(null)
-  const [actionStatus, setActionStatus] = useState<{ [key: number]: 'not-started' | 'in-progress' | 'completed' }>({
-    0: 'not-started',
-    1: 'not-started',
-    2: 'not-started',
-    3: 'not-started',
-  })
+
+  // Initial solutions - will be added to dynamically
+  const initialSolutions = [
+    {
+      title: "Purchase Doha Metro Monthly Gold Card",
+      icon: "🚇",
+      description: "Buy a monthly Gold Card for unlimited Metro + bus access. This one-time purchase commits you to public transport for 30 days. Your daily 30km commute emits 6.5kg CO2 weekly—the Metro reduces this by 60%.",
+      impact: {
+        co2Reduction: "13.5 kg CO2",
+        percentage: "One month of reduced commute emissions",
+        financialSaving: "Saves QAR 200 vs driving this month",
+      },
+      islamicConnection: {
+        concept: "Guardianship (Khalifa)",
+        explanation: "As caretakers of Allah's Earth, we reduce harm to His creation",
+      },
+      steps: [
+        "Visit any Metro station (Al Sadd, West Bay, or nearest to you) this week",
+        "Purchase Gold Card (QAR 300) and download Doha Metro app to save your commute route",
+      ],
+    },
+    {
+      title: "Buy Meal Prep Containers & Plan This Week's Meals",
+      icon: "🥘",
+      description: "Purchase 7 glass meal prep containers and plan your meals for the week. You currently waste QAR 180 of groceries monthly. This one-time setup enables systematic meal planning to cut waste by 50%.",
+      impact: {
+        co2Reduction: "9 kg CO2",
+        percentage: "One month of halved food waste",
+        financialSaving: "Saves QAR 90 on wasted groceries this month",
+      },
+      islamicConnection: {
+        concept: "Gratitude (Shukr)",
+        explanation: "Honor the blessing of sustenance by wasting nothing",
+      },
+      steps: [
+        "Purchase 7 glass containers (QAR 45 from Carrefour City Centre) by this weekend",
+        "Before next Friday's grocery shop, write meal plan for 6 dinners using current fridge contents",
+      ],
+    },
+    {
+      title: "Install & Program Smart Thermostat Timer",
+      icon: "❄️",
+      description: "Install a programmable timer on your AC unit to automatically raise temperature to 23°C during your 8-hour work day (7am-3pm). One-time setup that saves 24% cooling energy without behavior change.",
+      impact: {
+        co2Reduction: "7 kg CO2",
+        percentage: "One month of optimized cooling",
+        financialSaving: "Saves QAR 60 on electricity this month",
+      },
+      islamicConnection: {
+        concept: "Trusteeship (Amanah)",
+        explanation: "Resources are a trust from Allah—we must use them wisely",
+      },
+      steps: [
+        "Purchase AC programmable timer (QAR 60 from Lulu Electronics) by this weekend",
+        "Set schedule: 20°C when home, 23°C during work hours (7am-3pm), confirm it runs for 1 week",
+      ],
+    },
+    {
+      title: "Sign Gulf Climate Petition & Share with 10 People",
+      icon: "📢",
+      description: "Sign the Gulf Climate Petition calling for 40% renewable energy by 2030, then share with 10 contacts. Concrete advocacy action that takes 15 minutes but influences systemic policy change affecting millions.",
+      impact: {
+        co2Reduction: "Policy impact",
+        percentage: "Systemic change multiplier",
+        financialSaving: "Amplifies all climate actions",
+      },
+      islamicConnection: {
+        concept: "Collective Duty (Fard Kifayah)",
+        explanation: "When the community faces harm, speaking out becomes a shared obligation",
+      },
+      steps: [
+        "Visit gulfclimate.org and sign the petition with your name and email (5 minutes)",
+        "Share petition link on your WhatsApp status + send directly to 10 family/friends by end of week",
+      ],
+    },
+  ]
+
+  const [solutions, setSolutions] = useState(initialSolutions)
+  const [actionStatus, setActionStatus] = useState<{ [key: number]: 'not-started' | 'in-progress' | 'completed' }>(
+    Object.fromEntries(initialSolutions.map((_, i) => [i, 'not-started']))
+  )
   const [suggestedAction, setSuggestedAction] = useState<any>(null)
   const [showSuggestion, setShowSuggestion] = useState(false)
   const [lastCompletedIndex, setLastCompletedIndex] = useState<number | null>(null)
@@ -33,9 +108,11 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
   }
 
   const acceptSuggestion = () => {
-    // Add the suggested action to solutions (in a real app, this would update the state properly)
+    // Add the suggested action to solutions array
+    const newIndex = solutions.length
+    setSolutions([...solutions, suggestedAction])
+    setActionStatus({...actionStatus, [newIndex]: 'not-started'})
     setShowSuggestion(false)
-    alert(`Great! "${suggestedAction.title}" has been added to your action plan. In a full version, this would appear as a new card.`)
   }
 
   const rejectSuggestion = () => {
@@ -96,7 +173,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
       },
       islamicConnection: {
         concept: "Using Allah's Provisions Wisely",
-        explanation: "Harnessing abundant solar energy fulfills our duty as stewards of creation",
+        explanation: "Harnessing abundant solar energy fulfills our duty as caretakers of creation",
       },
       steps: [
         "Call Kahramaa Tarsheed at +974 4484-5555 to book your free home assessment by [specific date]",
@@ -254,81 +331,6 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
     return alternativeActions[randomIndex]
   }
 
-  const solutions = [
-    {
-      title: "Purchase Doha Metro Monthly Gold Card",
-      icon: "🚇",
-      description: "Buy a monthly Gold Card for unlimited Metro + bus access. This one-time purchase commits you to public transport for 30 days. Your daily 30km commute emits 6.5kg CO2 weekly—the Metro reduces this by 60%.",
-      impact: {
-        co2Reduction: "13.5 kg CO2",
-        percentage: "One month of reduced commute emissions",
-        financialSaving: "Saves QAR 200 vs driving this month",
-      },
-      islamicConnection: {
-        concept: "Guardianship (Khalifa)",
-        explanation: "As caretakers of Allah's Earth, we reduce harm to His creation",
-      },
-      steps: [
-        "Visit any Metro station (Al Sadd, West Bay, or nearest to you) this week",
-        "Purchase Gold Card (QAR 300) and download Doha Metro app to save your commute route",
-      ],
-    },
-    {
-      title: "Buy Meal Prep Containers & Plan This Week's Meals",
-      icon: "🥘",
-      description: "Purchase 7 glass meal prep containers and plan your meals for the week. You currently waste QAR 180 of groceries monthly. This one-time setup enables systematic meal planning to cut waste by 50%.",
-      impact: {
-        co2Reduction: "9 kg CO2",
-        percentage: "One month of halved food waste",
-        financialSaving: "Saves QAR 90 on wasted groceries this month",
-      },
-      islamicConnection: {
-        concept: "Gratitude (Shukr)",
-        explanation: "Honor the blessing of sustenance by wasting nothing",
-      },
-      steps: [
-        "Purchase 7 glass containers (QAR 45 from Carrefour City Centre) by this weekend",
-        "Before next Friday's grocery shop, write meal plan for 6 dinners using current fridge contents",
-      ],
-    },
-    {
-      title: "Install & Program Smart Thermostat Timer",
-      icon: "❄️",
-      description: "Install a programmable timer on your AC unit to automatically raise temperature to 23°C during your 8-hour work day (7am-3pm). One-time setup that saves 24% cooling energy without behavior change.",
-      impact: {
-        co2Reduction: "7 kg CO2",
-        percentage: "One month of optimized cooling",
-        financialSaving: "Saves QAR 60 on electricity this month",
-      },
-      islamicConnection: {
-        concept: "Trusteeship (Amanah)",
-        explanation: "Resources are a trust from Allah—we must use them wisely",
-      },
-      steps: [
-        "Purchase AC programmable timer (QAR 60 from Lulu Electronics) by this weekend",
-        "Set schedule: 20°C when home, 23°C during work hours (7am-3pm), confirm it runs for 1 week",
-      ],
-    },
-    {
-      title: "Sign Gulf Climate Petition & Share with 10 People",
-      icon: "📢",
-      description: "Sign the Gulf Climate Petition calling for 40% renewable energy by 2030, then share with 10 contacts. Concrete advocacy action that takes 15 minutes but influences systemic policy change affecting millions.",
-      impact: {
-        co2Reduction: "Policy impact",
-        percentage: "Systemic change multiplier",
-        financialSaving: "Amplifies all climate actions",
-      },
-      islamicConnection: {
-        concept: "Collective Duty (Fard Kifayah)",
-        explanation: "When the community faces harm, speaking out becomes a shared obligation",
-      },
-      steps: [
-        "Visit gulfclimate.org and sign the petition with your name and email (5 minutes)",
-        "Share petition link on your WhatsApp status + send directly to 10 family/friends by end of week",
-      ],
-    },
-  ]
-
   return (
     <div className="min-h-screen bg-white">
       {/* Sticky Header */}
@@ -367,7 +369,7 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
             <div className="text-sm text-gray-700 font-medium">CO₂ Reduction So Far</div>
           </div>
           <div className="bg-green-50 border-2 border-green-500 rounded-xl p-6 text-center">
-            <div className="text-3xl md:text-4xl font-bold text-green-700 mb-2">{getCompletedCount()}/4</div>
+            <div className="text-3xl md:text-4xl font-bold text-green-700 mb-2">{getCompletedCount()}/{solutions.length}</div>
             <div className="text-sm text-gray-700 font-medium">Actions Completed</div>
           </div>
           <div className="bg-blue-50 border-2 border-blue-500 rounded-xl p-6 text-center">
@@ -544,14 +546,13 @@ export default function Stage3({ currentStage }: { currentStage: number }) {
           })}
         </div>
 
-        {/* Hadith Quote - More Prominent */}
-        <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 rounded-2xl p-10 text-center mb-8 shadow-lg border-2 border-awaken-yellow">
-          <div className="text-5xl mb-4">🌳</div>
-          <p className="text-xl font-semibold mb-4 leading-relaxed max-w-3xl mx-auto text-gray-900">
-            "There is none amongst the Muslims who plants a tree or sows seeds, and then a bird, or a person or an animal eats from it, but is regarded as a charitable gift for him."
+        {/* Quran Quote - More Prominent */}
+        <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-2xl p-10 text-center mb-8 shadow-lg border-2 border-green-400">
+          <div className="text-5xl mb-4">📖</div>
+          <p className="text-2xl font-semibold mb-4 leading-relaxed max-w-3xl mx-auto text-gray-900">
+            "Indeed, Allah will not change the condition of a people until they change what is in themselves."
           </p>
-          <p className="text-base font-bold text-gray-800">— Prophet Muhammad ﷺ</p>
-          <p className="text-sm text-gray-600 mt-1">(Sahih al-Bukhari 2320, Sahih Muslim 1553)</p>
+          <p className="text-base font-bold text-gray-800">— Quran 13:11</p>
         </div>
 
         {/* Action Button */}
