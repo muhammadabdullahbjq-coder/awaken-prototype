@@ -4,15 +4,18 @@ import { useEffect, useState } from 'react'
 
 export default function IslamicLoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0)
-  const [hadith] = useState(() => {
-    const hadiths = [
-      "\"The world is beautiful and green, and verily Allah, the Exalted, has made you stewards in it, and He sees how you acquit yourselves.\" (Sahih Muslim 2742)",
-      "\"No Muslim plants a tree or sows a seed, and then a bird, or a person, or an animal eats thereof, but it is charity on his part.\" (Sahih Bukhari 2320)",
-      "\"There is none amongst the Muslims who plants a tree or sows seeds, and then a bird, or a person or an animal eats from it, but is regarded as a charitable gift for him.\" (Sahih Muslim 1553)",
-      "\"Do not be wasteful with water even if you are at a flowing river.\" (Sunan Ibn Majah 425)",
-    ]
-    return hadiths[Math.floor(Math.random() * hadiths.length)]
-  })
+  const hadiths = [
+    "\"The world is beautiful and green, and verily Allah, the Exalted, has made you stewards in it, and He sees how you acquit yourselves.\" (Sahih Muslim 2742)",
+    "\"No Muslim plants a tree or sows a seed, and then a bird, or a person, or an animal eats thereof, but it is charity on his part.\" (Sahih Bukhari 2320)",
+    "\"There is none amongst the Muslims who plants a tree or sows seeds, and then a bird, or a person or an animal eats from it, but is regarded as a charitable gift for him.\" (Sahih Muslim 1553)",
+    "\"Do not be wasteful with water even if you are at a flowing river.\" (Sunan Ibn Majah 425)",
+  ]
+  const [hadith, setHadith] = useState(hadiths[0])
+
+  useEffect(() => {
+    // Set random hadith only on client to avoid hydration mismatch
+    setHadith(hadiths[Math.floor(Math.random() * hadiths.length)])
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {

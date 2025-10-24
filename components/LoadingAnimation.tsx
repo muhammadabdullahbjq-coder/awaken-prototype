@@ -5,21 +5,24 @@ import { useEffect, useState } from 'react'
 export default function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0)
   const [currentStep, setCurrentStep] = useState(0)
-  const [climateFact] = useState(() => {
-    const facts = [
-      "Switching to renewable energy could prevent 4.5 million premature deaths per year from air pollution",
-      "Transportation accounts for 24% of global CO2 emissions - the largest source of greenhouse gases",
-      "Food waste produces 8-10% of global greenhouse gas emissions",
-      "Planting 1 trillion trees could absorb 25% of current CO2 emissions",
-      "Buildings use 36% of global energy and produce 39% of energy-related CO2 emissions",
-      "The ocean has absorbed 90% of the excess heat from climate change, protecting land ecosystems",
-      "If food waste were a country, it would be the 3rd largest greenhouse gas emitter after USA and China",
-      "Renewable energy jobs have grown 700% in the last decade",
-      "Electric vehicles produce 50% less CO2 over their lifetime than gas cars",
-      "Reducing meat consumption by 50% could cut diet-related emissions by 35%",
-    ]
-    return facts[Math.floor(Math.random() * facts.length)]
-  })
+  const facts = [
+    "Switching to renewable energy could prevent 4.5 million premature deaths per year from air pollution",
+    "Transportation accounts for 24% of global CO2 emissions - the largest source of greenhouse gases",
+    "Food waste produces 8-10% of global greenhouse gas emissions",
+    "Planting 1 trillion trees could absorb 25% of current CO2 emissions",
+    "Buildings use 36% of global energy and produce 39% of energy-related CO2 emissions",
+    "The ocean has absorbed 90% of the excess heat from climate change, protecting land ecosystems",
+    "If food waste were a country, it would be the 3rd largest greenhouse gas emitter after USA and China",
+    "Renewable energy jobs have grown 700% in the last decade",
+    "Electric vehicles produce 50% less CO2 over their lifetime than gas cars",
+    "Reducing meat consumption by 50% could cut diet-related emissions by 35%",
+  ]
+  const [climateFact, setClimateFact] = useState(facts[0])
+
+  useEffect(() => {
+    // Set random fact only on client to avoid hydration mismatch
+    setClimateFact(facts[Math.floor(Math.random() * facts.length)])
+  }, [])
 
   const steps = [
     { label: 'Analyzing spending patterns...', threshold: 33 },
