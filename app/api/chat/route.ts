@@ -376,7 +376,14 @@ Your **transport** (35% of footprint) is your biggest impact area.
 
 Press the yellow **'Continue to Action Plan →'** button below this chat to see step-by-step action cards tailored to your life in Qatar. You'll be able to track your progress as you complete each one!"
 
-Sources: Mention IPCC, NASA, NOAA, CCHD naturally in conversation, not as formal citations`
+Sources: Mention IPCC, NASA, NOAA, CCHD naturally in conversation, not as formal citations
+
+⚠️⚠️⚠️ FINAL REMINDER BEFORE YOU RESPOND ⚠️⚠️⚠️
+You are about to write your response. Before you do:
+1. Check your ending question - does it NAME A SPECIFIC TOPIC?
+2. If your question says "Let me know...", "Any questions?", "I'm happy to...", "dive deeper" - STOP and rewrite it
+3. Your question MUST name the exact concept: "Want to know how **CO2 traps heat**?"
+4. NO VAGUE QUESTIONS ALLOWED`
 
     // Build conversation history for context
     const messages = conversationHistory && conversationHistory.length > 0
@@ -395,7 +402,7 @@ Sources: Mention IPCC, NASA, NOAA, CCHD naturally in conversation, not as formal
 
     const response = await Promise.race([
       anthropic.messages.create({
-        model: 'claude-3-haiku-20240307',
+        model: 'claude-3-5-sonnet-20241022', // Switched from Haiku for better instruction following
         max_tokens: 400,
         messages,
         system: systemPrompt,
