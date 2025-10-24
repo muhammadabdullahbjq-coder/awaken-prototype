@@ -105,7 +105,7 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
     const userMessage = input.trim()
     setInput('')
     setShouldAutoScroll(true) // Force scroll when user sends message
-    const newMessages = [...messages, { role: 'user', content: userMessage }]
+    const newMessages: Message[] = [...messages, { role: 'user' as const, content: userMessage }]
     setMessages(newMessages)
     setIsLoading(true)
 
@@ -141,13 +141,13 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
         throw new Error(data.error)
       }
 
-      setMessages((prev) => [...prev, { role: 'assistant', content: data.message }])
+      setMessages((prev) => [...prev, { role: 'assistant' as const, content: data.message }])
     } catch (error) {
       console.error('Chat error:', error)
       setMessages((prev) => [
         ...prev,
         {
-          role: 'assistant',
+          role: 'assistant' as const,
           content: 'I apologize, but I encountered an error. Please make sure you have set up your ANTHROPIC_API_KEY in the .env.local file.',
         },
       ])

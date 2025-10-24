@@ -101,7 +101,7 @@ export default function LoadingAnimation({ onComplete }: { onComplete: () => voi
         </div>
 
         {/* Climate Fact Box */}
-        <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 border-2 border-awaken-yellow shadow-lg max-w-md mx-auto">
+        <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 border-2 border-awaken-yellow shadow-lg w-full">
           <div className="flex items-start gap-3">
             <span className="text-2xl flex-shrink-0">💡</span>
             <div>
