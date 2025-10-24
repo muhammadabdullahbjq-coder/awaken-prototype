@@ -18,6 +18,7 @@ const YALE_TONES = {
 export async function POST(req: NextRequest) {
   try {
     const { message, userProfile, conversationHistory, footprintData } = await req.json()
+    console.log('[Chat API] Received request:', { messageLength: message?.length, historyLength: conversationHistory?.length })
 
     // Determine tone based on user profile (default to 'concerned')
     const tone = userProfile?.yaleCategory || 'concerned'
@@ -156,7 +157,8 @@ Adapt your response to their stage.
 CONVERSATION STYLE - THIS IS CRITICAL:
 ASSUME THE USER HAS A VERY SHORT ATTENTION SPAN
 - Keep responses EXTREMELY SHORT (1-2 sentences MAX)
-- Use **bold** for key terms/numbers
+- **ALWAYS USE BOLD** for key terms/numbers - this is MANDATORY for scannability
+- BOLD examples: **35%**, **fossil fuels**, **Metro**, **2°C**, **NASA**, **1.5°C**
 - Use bullet points (•) when listing things
 - Break longer answers into scannable chunks
 - Ask follow-up questions to keep engagement
@@ -165,8 +167,14 @@ ASSUME THE USER HAS A VERY SHORT ATTENTION SPAN
 - **NEVER use roleplay actions or body language** like *nods*, *smiles*, etc. - you're a text chatbot, not a character
 - **NEVER say "I'd be happy to..." or "I'd love to..."** - sounds condescending. Instead use: "Want me to...?", "Should I...?", "Would you like me to...?"
 
+**CRITICAL: BOLD KEY WORDS IN EVERY RESPONSE**
+You MUST bold important numbers, percentages, scientific terms, and location names. This is NOT optional. The user is scanning quickly and needs visual anchors.
+
 STRATEGIC QUESTIONING - YOUR SECRET WEAPON:
 Think of the user as distracted - you need to GRAB their attention and pull them forward.
+
+**ABSOLUTE RULE: EVERY RESPONSE MUST END WITH A FORWARD-MOMENTUM QUESTION**
+No matter what the user asks, no matter if they challenge you, no matter if they disagree - ALWAYS end by offering the next piece of the journey.
 
 NEVER EVER ask boring check-in questions like:
 ❌ "Does this make sense?"
@@ -175,6 +183,8 @@ NEVER EVER ask boring check-in questions like:
 ❌ "Do you have any other questions?"
 ❌ "Does that answer your question?"
 ❌ "Anything else you'd like to know?"
+❌ "Happy to explain more if needed"
+❌ "Let me know if you want to know more"
 These kill momentum and don't drive the conversation forward.
 
 ALWAYS ask forward-momentum questions that OFFER the next stage/topic:
@@ -189,7 +199,19 @@ NEVER ask vague things like:
 ❌ "What do you think about that?"
 ❌ "Any thoughts?"
 
-The goal: Guide them to the NEXT STAGE. Each question should naturally lead them deeper into the journey.
+**HANDLING CHALLENGES/DISAGREEMENTS:**
+If user challenges you or disagrees:
+1. Answer their challenge (1-2 sentences with evidence)
+2. IMMEDIATELY redirect to next stage: "Now that we've covered that - want to know what's causing this warming?"
+
+EXAMPLE:
+User: "But isn't this just natural cycles?"
+Bad: "Good question! Natural cycles exist but this is different. Happy to explain more if you'd like."
+Good: "Fair point. Natural cycles = **1,000s of years**. Current warming = **100 years**. NASA's data proves it's us.
+
+Want to know what's actually causing this rapid change?"
+
+The goal: NEVER let the conversation stall. Guide them to the NEXT STAGE, always.
 
 **WHEN USER WANTS SOLUTIONS:**
 The behavior depends on WHERE they are in the journey:
@@ -337,12 +359,24 @@ Sources: Mention IPCC, NASA, NOAA, CCHD naturally in conversation, not as formal
         }))
       : [{ role: 'user', content: message }]
 
-    const response = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
-      max_tokens: 400, // Enough for complete short responses without cutting off
-      messages,
-      system: systemPrompt,
-    })
+    console.log('[Chat API] Calling Anthropic with', messages.length, 'messages')
+
+    // Add timeout wrapper
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Request timeout after 30s')), 30000)
+    )
+
+    const response = await Promise.race([
+      anthropic.messages.create({
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 400,
+        messages,
+        system: systemPrompt,
+      }),
+      timeoutPromise
+    ]) as any
+
+    console.log('[Chat API] Got response from Anthropic')
 
     const assistantMessage = response.content[0].type === 'text' ? response.content[0].text : ''
 

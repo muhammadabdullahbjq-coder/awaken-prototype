@@ -174,13 +174,6 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
     return formatted
   }
 
-  const suggestedQuestions = [
-    "Is climate change actually real?",
-    "What's the science behind climate change?",
-    "How do we know humans are causing it?",
-    "What's the evidence that it's happening?",
-  ]
-
   const surveyQuestions = [
     {
       id: 'importance',
@@ -400,24 +393,6 @@ export default function Stage2({ onContinue, currentStage }: { onContinue: () =>
 
             <div ref={messagesEndRef} />
           </div>
-
-          {/* Suggested Questions */}
-          {messages.length <= 2 && (
-            <div className="border-t px-4 pt-4 pb-2">
-              <p className="text-xs text-gray-600 mb-2">Suggested questions:</p>
-              <div className="grid grid-cols-2 gap-2">
-                {suggestedQuestions.map((question, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setInput(question)}
-                    className="text-left p-2 bg-gray-50 border border-gray-200 rounded-lg hover:border-awaken-yellow hover:bg-yellow-50 transition-all text-xs"
-                  >
-                    {question}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Input */}
           <div className="border-t p-4">
